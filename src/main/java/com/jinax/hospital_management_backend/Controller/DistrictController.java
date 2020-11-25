@@ -3,6 +3,7 @@ package com.jinax.hospital_management_backend.Controller;
 import com.jinax.hospital_management_backend.Component.MyUserDetails;
 import com.jinax.hospital_management_backend.Entity.Patient;
 import com.jinax.hospital_management_backend.Entity.User;
+import com.jinax.hospital_management_backend.Service.BedService;
 import com.jinax.hospital_management_backend.Service.PatientService;
 import com.jinax.hospital_management_backend.Service.UserService;
 import io.swagger.annotations.Api;
@@ -26,10 +27,12 @@ public class DistrictController {
 
     private final UserService userService;
     private final PatientService patientService;
+    private final BedService bedService;
 
-    public DistrictController(UserService userService, PatientService patientService) {
+    public DistrictController(UserService userService, PatientService patientService, BedService bedService) {
         this.userService = userService;
         this.patientService = patientService;
+        this.bedService = bedService;
     }
 
 //    public Map<String, List<Long>>
@@ -63,7 +66,7 @@ public class DistrictController {
     @ApiOperation("获取病房护士照顾的病人的信息")
     @ResponseBody
     @GetMapping("/{nurseId}")
-    @PreAuthorize("hasAnyRole('DOCTOR','CHIEF_NURSE')")
+    @PreAuthorize("hasAnyAuthority('DOCTOR','CHIEF_NURSE')")
     public Map<String,List<Long>> getPatientIdsByNurseId(@PathVariable("nurseId") long nurseId){
         Map<String,List<Long>> result = new HashMap<>();
         List<Patient> patientsByNurseId = patientService.getPatientsByNurseId(nurseId);
@@ -72,13 +75,17 @@ public class DistrictController {
         return result;
     }
 
-    @ApiOperation("获取一个区域内病床对应病人信息")
+    @ApiOperation("获取当前区域内病床对应病人信息")
     @ResponseBody
-    @PutMapping("/bedPatient")
-    @PreAuthorize("hasRole('CHIEF_NURSE')")
-    public Map<String,List<Long>> getBed2Patients(){
-//        patientService.getPatientsByNurseId();
-
-        return null;
+    @GetMapping("/bedPatient/")
+    @PreAuthorize("hasAuthority('CHIEF_NURSE')")
+    public Map<String,Map<Long,Long>> getBed2Patients(){
+        MyUserDetails details = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        long districtId = details.getDistrictId();
+        Map<Long, Long> allBedWithPatientIdInGivenDistrict = bedService.findAllBedWithPatientIdInGivenDistrict(districtId);
+        Map<String,Map<Long,Long>> result = new HashMap<>();
+        result.put("data",allBedWithPatientIdInGivenDistrict);
+        return result;
     }
 }
+

@@ -6,6 +6,12 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 /**
  * @author : chara
  */
@@ -19,7 +25,7 @@ public class GlobalCorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         //允许所有域名进行跨域调用
-        config.addAllowedOriginPattern("*");
+        config.addAllowedOrigin("*");
         //允许跨越发送cookie
         config.setAllowCredentials(true);
         //放行全部原始头信息
@@ -29,5 +35,6 @@ public class GlobalCorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
+
     }
 }

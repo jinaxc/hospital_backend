@@ -1,6 +1,8 @@
 package com.jinax.hospital_management_backend.Controller;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.jinax.hospital_management_backend.Component.MyUserDetails;
 import com.jinax.hospital_management_backend.Entity.User;
 import com.jinax.hospital_management_backend.Service.LoginService;
@@ -57,13 +59,17 @@ public class UserController {
     @ApiOperation("获取自己的信息")
     @ResponseBody
     @GetMapping("/self")
-    public Map<String, String> getSelfInfo(){
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public User getSelfInfo(){
         MyUserDetails details = (MyUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Map<String,String> result = new HashMap<>();
-        result.put("name",details.getRealUsername());
-        result.put("identification",details.getUsername());
-        result.put("districtId",details.getDistrictId() + "");
-        return result;
+        User user = new User();
+        user.setId(details.getId());
+        user.setDistrictId(details.getDistrictId());
+        user.setIdentification(details.getUsername());
+        user.setName(details.getRealUsername());
+        user.setDistrictId(details.getDistrictId());
+        user.setRole(details.getRole());
+        return user;
     }
 
     @ApiOperation("登录")

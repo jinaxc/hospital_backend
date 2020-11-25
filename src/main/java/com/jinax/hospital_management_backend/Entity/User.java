@@ -1,5 +1,6 @@
 package com.jinax.hospital_management_backend.Entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
@@ -11,11 +12,13 @@ import javax.persistence.*;
 @Table(name = "user")
 public class User {
 
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     public static enum roleType{
         DOCTOR,
         CHIEF_NURSE,
+        WARD_NURSE,
         EMERGENCY_NURSE,
-        WARD_NURSE
+
     }
 
     @Id
