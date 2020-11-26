@@ -8,6 +8,8 @@ import com.jinax.hospital_management_backend.Service.PatientService;
 import com.jinax.hospital_management_backend.Service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -35,20 +37,20 @@ public class DistrictController {
         this.bedService = bedService;
     }
 
-//    public Map<String, List<Long>>
-
-//
     @ApiOperation("查找病人信息")
     @ResponseBody
     @GetMapping("/patient")
-    public Map<String,Long> getPatients(Integer districtId,Boolean canLeave,Integer state,Integer level){
-
-        return null;
+    public Map<String,List<Long>> getPatients(Integer districtId,Boolean canLeave,Integer state,Integer level){
+        List<Long> patients = patientService.getPatients(districtId, canLeave, state, level);
+        Map<String,List<Long>> result = new HashMap<>();
+        result.put("data",patients);
+        return result;
     }
 
     @ApiOperation("获取护士长信息")
     @ResponseBody
     @GetMapping("/headNurse")
+    @PreAuthorize("hasAuthority('DOCTOR')")
     public Map<String,Long> getChiefNurse(){
         MyUserDetails details = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Map<String,Long> result = new HashMap<>();
@@ -61,6 +63,7 @@ public class DistrictController {
     @ApiOperation("获取病房护士的信息")
     @ResponseBody
     @GetMapping("/roomNurse")
+    @PreAuthorize("hasAuthority('DOCTOR')")
     public Map<String,List<Long>> getRoomNurses(){
         MyUserDetails details = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Map<String,List<Long>> result = new HashMap<>();
@@ -85,7 +88,7 @@ public class DistrictController {
 
     @ApiOperation("获取当前区域内病床对应病人信息")
     @ResponseBody
-    @GetMapping("/bedPatient/")
+    @GetMapping("/bedPatient")
     @PreAuthorize("hasAuthority('CHIEF_NURSE')")
     public Map<String,Map<Long,Long>> getBed2Patients(){
         MyUserDetails details = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -95,5 +98,36 @@ public class DistrictController {
         result.put("data",allBedWithPatientIdInGivenDistrict);
         return result;
     }
+
+    @ApiOperation("增加病房护士")
+    @ResponseBody
+    @PutMapping("/roomNurse/{nurseId}")
+    @PreAuthorize("hasAuthority('CHIEF_NURSE')")
+    public ResponseEntity<Map<String, Long>> addRoomNurse(@PathVariable("nurseId") Long nurseId){
+        MyUserDetails details = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        long districtId = details.getDistrictId();
+        if(!userService.setWardNurseToDistrict(nurseId,districtId)){
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }else{
+            Map<String, Long> result = new HashMap<>();
+            result.put("data",nurseId);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
+    }
+
+    @ApiOperation("删除病房护士")
+    @ResponseBody
+    @DeleteMapping("/roomNurse/{nurseId}")
+    @PreAuthorize("hasAuthority('CHIEF_NURSE')")
+    public ResponseEntity<Map<String, Long>> removeRoomNurse(@PathVariable("nurseId") Long nurseId){
+        if(!userService.removeWardNurseFromDistrict(nurseId)){
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }else{
+            Map<String, Long> result = new HashMap<>();
+            result.put("data",nurseId);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
+    }
+
 }
 

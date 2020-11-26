@@ -13,12 +13,21 @@ import javax.persistence.*;
 public class User {
 
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
-    public static enum roleType{
-        DOCTOR,
-        CHIEF_NURSE,
-        WARD_NURSE,
-        EMERGENCY_NURSE,
+    public static enum roleType implements BaseEnum{
+        DOCTOR(0),
+        CHIEF_NURSE(1),
+        WARD_NURSE(2),
+        EMERGENCY_NURSE(3);
+        private Integer code;
 
+        roleType(Integer code) {
+            this.code = code;
+        }
+
+        @Override
+        public Integer getCode() {
+            return code;
+        }
     }
 
     @Id

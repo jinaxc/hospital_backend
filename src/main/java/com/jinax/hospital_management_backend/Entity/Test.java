@@ -1,6 +1,7 @@
 package com.jinax.hospital_management_backend.Entity;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,23 +12,43 @@ import java.util.Date;
 @Entity
 @Table(name = "test")
 public class Test {
-    public static enum Result{
-        NEGATIVE,
-        POSITIVE
+    public static enum Result implements BaseEnum{
+        NEGATIVE(0),
+        POSITIVE(1);
 
+        private Integer code;
+        Result(int i) {
+            code = i;
+        }
+
+        @Override
+        public Integer getCode() {
+            return code;
+        }
     }
 
-    public static enum Level{
-        MINOR,
-        MAJOR,
-        DANGER;
-        public static Level getLevel(int i){
-            switch (i){
-                case 1 :return MINOR;
-                case 2 : return MAJOR;
-                case 3 : return DANGER;
+    public static enum Level implements BaseEnum{
+        MINOR(0),
+        MAJOR(1),
+        DANGER(2);
+
+        private Integer code;
+        Level(int i) {
+            code = i;
+        }
+
+        public static Level getLevel(int level) {
+            switch (level){
+                case 0:return MINOR;
+                case 1:return MAJOR;
+                case 2:return DANGER;
             }
             return null;
+        }
+
+        @Override
+        public Integer getCode() {
+            return code;
         }
     }
 
@@ -41,6 +62,7 @@ public class Test {
     @Column(name = "test_time")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date testTime;
     @Column(name = "level")
     @Enumerated(EnumType.STRING)

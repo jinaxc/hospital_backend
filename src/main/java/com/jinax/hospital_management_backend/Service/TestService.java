@@ -1,10 +1,12 @@
 package com.jinax.hospital_management_backend.Service;
 
 import com.jinax.hospital_management_backend.Entity.Test;
+import com.jinax.hospital_management_backend.Exception.TestNotExistedException;
 import com.jinax.hospital_management_backend.Repository.TestRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * @author : chara
@@ -23,10 +25,24 @@ public class TestService {
      * @return the id of the generated test
      */
     public Test addTest(Test test){
-        test.setTestTime(null);
         test.setId(null);
-        Test save = testRepository.save(test);
-        return save;
+        return testRepository.save(test);
+    }
+
+    public Test updateTest(long testId,int level){
+        Test t = getTest(testId);
+        t.setLevel(Test.Level.getLevel(level));
+        return testRepository.save(t);
+    }
+
+
+    public Test getTest(long testId) throws TestNotExistedException {
+        Optional<Test> byId = testRepository.findById(testId);
+        if(byId.isPresent()){
+            return byId.get();
+        }else{
+            throw new TestNotExistedException("test not exist, id is " + testId);
+        }
     }
 
 

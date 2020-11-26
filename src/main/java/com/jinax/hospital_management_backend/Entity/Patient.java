@@ -8,18 +8,29 @@ import javax.persistence.*;
 @Entity
 @Table(name = "patient")
 public class Patient {
-    public static enum Level{
-        MINOR,
-        MAJOR,
-        DANGER;
+    public static enum Level implements BaseEnum{
+        MINOR(0),
+        MAJOR(1),
+        DANGER(2);
 
-        public static Level getLevel(int index){
-            switch(index){
+        private Integer code;
+
+        Level(int i) {
+            this.code = i;
+        }
+
+        public static Level getLevel(Integer level) {
+            switch (level){
                 case 0:return MINOR;
                 case 1:return MAJOR;
                 case 2:return DANGER;
             }
             return null;
+        }
+
+        @Override
+        public Integer getCode() {
+            return code;
         }
     }
 

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -40,16 +39,22 @@ public class PatientService {
     }
 
 
-    public Map<String,Long> getPatients(Integer districtId, Boolean canLeave, Integer state, Integer level){
-        patientRepository.findAllByDistrictIdAndLevelAndState(districtId, Patient.Level.getLevel(level), DailyReport.State.getState(level));
-        return null;
+    public List<Long> getPatients(Integer districtId, Boolean canLeave, Integer state, Integer level){
+        List<Long> allByDistrictIdAndLevelAndState = patientRepository.
+                findAllByDistrictIdAndLevelAndState(districtId, Patient.Level.getLevel(level), DailyReport.State.getState(level));
+        if (canLeave != null) {
+            List<Long> allWithThreeGoodTemperature = patientRepository.findAllWithThreeGoodTemperature();
+            List<Long> allWithTwoNegativeTests = patientRepository.findAllWithTwoNegativeTests();
+            allWithThreeGoodTemperature.retainAll(allWithTwoNegativeTests);
+            allByDistrictIdAndLevelAndState.retainAll(allWithThreeGoodTemperature);
+        }
+        return allByDistrictIdAndLevelAndState;
     }
 
     public List<Patient> getPatientsByNurseId(long nurseId){
         List<Patient> allByNurseId = patientRepository.findAllByNurseId(nurseId);
         return allByNurseId;
     }
-
 
     /**
      * needs to allocate the patient to a correct district
@@ -65,7 +70,7 @@ public class PatientService {
         List<District> byType = districtRepository.findAllByType(District.Type.valueOf(level.name()));
         for(District district : byType){
             List<Long> emptyBedInGivenDistrict = bedRepository.findEmptyBedInGivenDistrict(district.getId());
-            List<Long> freeWardNurseInGivenDistrict = userRepository.findFreeWardNurseInGivenDistrict(district.getId(), District.Type.getNurseCareCount(district.getType()));
+            List<Long> freeWardNurseInGivenDistrict = userRepository.findFreeWardNurseInGivenDistrict(district.getId(), district.getType().getCode());
             if(emptyBedInGivenDistrict.isEmpty() || freeWardNurseInGivenDistrict.isEmpty()){
                 continue;
             }
@@ -79,5 +84,14 @@ public class PatientService {
         List<District> allByType = districtRepository.findAllByType(District.Type.ISOLATION);
         patient.setDistrictId(allByType.get(0).getId());
         return patientRepository.save(patient);
+    }
+
+    public boolean isPatientInMinorDistrict(long patientId){
+        Optional<District.Type> districtOfPatient = patientRepository.getDistrictOfPatient(patientId);
+        if(districtOfPatient.isPresent()){
+            throw new PatientNotExistedException("patient not exist, id is " + patientId);
+        }else{
+            return districtOfPatient.get() == District.Type.MINOR;
+        }
     }
 }

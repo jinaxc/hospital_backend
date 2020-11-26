@@ -1,5 +1,7 @@
 package com.jinax.hospital_management_backend.Entity;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
+
 import javax.persistence.*;
 
 /**
@@ -9,18 +11,20 @@ import javax.persistence.*;
 @Table(name="district")
 public class District {
 
-    public static enum Type{
-        MINOR,
-        MAJOR,
-        DANGER,
-        ISOLATION;
-        public static int getNurseCareCount(Type type){
-            switch (type){
-                case MINOR:return 3;
-                case MAJOR:return 2;
-                case DANGER:return 1;
-            }
-            return 0;
+    public static enum Type implements BaseEnum {
+        MINOR(0),
+        MAJOR(1),
+        DANGER(2),
+        ISOLATION(3);
+
+        private Integer code;
+        Type(int i) {
+            this.code = i;
+        }
+
+        @Override
+        public Integer getCode() {
+            return code;
         }
     }
 
