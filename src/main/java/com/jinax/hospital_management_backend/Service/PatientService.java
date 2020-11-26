@@ -1,9 +1,6 @@
 package com.jinax.hospital_management_backend.Service;
 
-import com.jinax.hospital_management_backend.Entity.Bed;
-import com.jinax.hospital_management_backend.Entity.District;
-import com.jinax.hospital_management_backend.Entity.Patient;
-import com.jinax.hospital_management_backend.Entity.User;
+import com.jinax.hospital_management_backend.Entity.*;
 import com.jinax.hospital_management_backend.Exception.AddPatientFailedException;
 import com.jinax.hospital_management_backend.Exception.PatientNotExistedException;
 import com.jinax.hospital_management_backend.Repository.*;
@@ -11,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -39,6 +37,12 @@ public class PatientService {
             return byId.get();
         }
         throw new PatientNotExistedException("patient not exist, id is " + patientId);
+    }
+
+
+    public Map<String,Long> getPatients(Integer districtId, Boolean canLeave, Integer state, Integer level){
+        patientRepository.findAllByDistrictIdAndLevelAndState(districtId, Patient.Level.getLevel(level), DailyReport.State.getState(level));
+        return null;
     }
 
     public List<Patient> getPatientsByNurseId(long nurseId){

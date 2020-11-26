@@ -37,6 +37,14 @@ public class DistrictController {
 
 //    public Map<String, List<Long>>
 
+//
+    @ApiOperation("查找病人信息")
+    @ResponseBody
+    @GetMapping("/patient")
+    public Map<String,Long> getPatients(Integer districtId,Boolean canLeave,Integer state,Integer level){
+
+        return null;
+    }
 
     @ApiOperation("获取护士长信息")
     @ResponseBody

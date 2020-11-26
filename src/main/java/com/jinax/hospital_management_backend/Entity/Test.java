@@ -14,6 +14,7 @@ public class Test {
     public static enum Result{
         NEGATIVE,
         POSITIVE
+
     }
 
     public static enum Level{

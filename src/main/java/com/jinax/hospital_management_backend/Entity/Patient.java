@@ -11,7 +11,16 @@ public class Patient {
     public static enum Level{
         MINOR,
         MAJOR,
-        DANGER
+        DANGER;
+
+        public static Level getLevel(int index){
+            switch(index){
+                case 0:return MINOR;
+                case 1:return MAJOR;
+                case 2:return DANGER;
+            }
+            return null;
+        }
     }
 
     @Id

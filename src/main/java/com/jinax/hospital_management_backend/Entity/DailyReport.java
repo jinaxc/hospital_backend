@@ -11,7 +11,16 @@ public class DailyReport {
     public static enum State{
         IN,
         OUT,
-        DIE
+        DIE;
+
+        public static State getState(int index){
+            switch (index){
+                case 0 :return IN;
+                case 1 : return OUT;
+                case 2:return DIE;
+            }
+            return null;
+        }
     }
 
     @GeneratedValue(strategy=GenerationType.IDENTITY)
