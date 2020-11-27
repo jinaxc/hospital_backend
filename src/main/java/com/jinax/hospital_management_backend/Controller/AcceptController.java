@@ -31,7 +31,7 @@ public class AcceptController {
     @ApiOperation("收治检测")
     @ResponseBody
     @PostMapping("/naTest")
-    @PreAuthorize("hasRole('EMERGENCY_NURSE')")
+    @PreAuthorize("hasAuthority('EMERGENCY_NURSE')")
     public Test naTest(boolean isPositive, int level){
         Test t = new Test();
         t.setResult(isPositive ? Test.Result.POSITIVE : Test.Result.NEGATIVE);
@@ -41,7 +41,7 @@ public class AcceptController {
 
     @ApiOperation("接收病人")
     @ResponseBody
-    @PreAuthorize("hasRole('EMERGENCY_NURSE')")
+    @PreAuthorize("hasAuthority('EMERGENCY_NURSE')")
     @PostMapping("/patient")
     public Patient acceptPatient(Patient patient){
         return patientService.addPatient(patient);

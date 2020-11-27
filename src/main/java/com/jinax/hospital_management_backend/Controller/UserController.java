@@ -64,7 +64,10 @@ public class UserController {
         MyUserDetails details = (MyUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = new User();
         user.setId(details.getId());
-        user.setDistrictId(details.getDistrictId());
+        if(user.getDistrictId() != null){
+            user.setDistrictId(details.getDistrictId());
+        }
+
         user.setIdentification(details.getUsername());
         user.setName(details.getRealUsername());
         user.setDistrictId(details.getDistrictId());

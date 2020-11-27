@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 
 /**
  * @author : chara
@@ -38,10 +39,10 @@ public class GlobalCorsConfig {
             @Override
             protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
                 String origin = request.getHeader("origin");
-                config.addAllowedOrigin(origin);
+                config.setAllowedOrigins(Collections.singletonList(origin));
                 super.doFilterInternal(request, response, filterChain);
             }
         };
-
+//        return new CorsFilter(source);
     }
 }
