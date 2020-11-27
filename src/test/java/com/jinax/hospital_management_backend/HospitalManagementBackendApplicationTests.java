@@ -1,5 +1,6 @@
 package com.jinax.hospital_management_backend;
 
+import com.jinax.hospital_management_backend.Entity.User;
 import com.jinax.hospital_management_backend.Repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,8 @@ class HospitalManagementBackendApplicationTests {
 
     @Test
     void contextLoads() {
-        userRepository.findAll();
+
+//        userRepository.findByDistrictIdEqualsAndRoleEquals(1, User.roleType.CHIEF_NURSE);
     }
 
 }

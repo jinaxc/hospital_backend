@@ -39,10 +39,10 @@ public class PatientService {
     }
 
 
-    public List<Long> getPatients(Integer districtId, Boolean canLeave, Integer state, Integer level){
+    public List<Long> getPatients(Long districtId, Boolean canLeave, Integer state, Integer level){
         List<Long> allByDistrictIdAndLevelAndState = patientRepository.
                 findAllByDistrictIdAndLevelAndState(districtId, Patient.Level.getLevel(level), DailyReport.State.getState(state));
-        if (canLeave != null) {
+        if (canLeave) {
             List<Long> allWithThreeGoodTemperature = patientRepository.findAllWithThreeGoodTemperature();
             List<Long> allWithTwoNegativeTests = patientRepository.findAllWithTwoNegativeTests();
             allWithThreeGoodTemperature.retainAll(allWithTwoNegativeTests);
@@ -51,9 +51,12 @@ public class PatientService {
         return allByDistrictIdAndLevelAndState;
     }
 
+    public List<Long> getPatientsThatCanLeave(){
+        return getPatients(null,true,null,null);
+    }
+
     public List<Patient> getPatientsByNurseId(long nurseId){
-        List<Patient> allByNurseId = patientRepository.findAllByNurseId(nurseId);
-        return allByNurseId;
+        return patientRepository.findAllByNurseId(nurseId);
     }
 
     /**

@@ -40,7 +40,7 @@ public class DistrictController {
     @ApiOperation("查找病人信息")
     @ResponseBody
     @GetMapping("/patient")
-    public Map<String,List<Long>> getPatients(Integer districtId,Boolean canLeave,Integer state,Integer level){
+    public Map<String,List<Long>> getPatients(Long districtId,Boolean canLeave,Integer state,Integer level){
         List<Long> patients = patientService.getPatients(districtId, canLeave, state, level);
         Map<String,List<Long>> result = new HashMap<>();
         result.put("data",patients);

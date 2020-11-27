@@ -1,7 +1,6 @@
 package com.jinax.hospital_management_backend.Service;
 
 import com.jinax.hospital_management_backend.Component.MyUserDetails;
-import com.jinax.hospital_management_backend.Entity.Patient;
 import com.jinax.hospital_management_backend.Entity.User;
 import com.jinax.hospital_management_backend.Exception.UserNotExistedException;
 import com.jinax.hospital_management_backend.Repository.PatientRepository;
@@ -12,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+
 
 /**
  * @author : chara
@@ -43,11 +43,11 @@ public class UserService {
     }
 
     public User findChiefNurseByDistrictId(long districtId){
-        List<User> byDistrictIdAndRole = userRepository.findByDistrictIdAndRole(districtId, User.roleType.CHIEF_NURSE);
-        return byDistrictIdAndRole.isEmpty()? null : byDistrictIdAndRole.get(0);
+        Optional<User> user = userRepository.findByDistrictIdEqualsAndRoleChiefNurse(districtId);
+        return user.orElse(null);
     }
     public List<User> findWardNurseByDistrictId(long districtId){
-        return userRepository.findByDistrictIdAndRole(districtId, User.roleType.WARD_NURSE);
+        return userRepository.findByDistrictIdAndRoleEquals(districtId, User.roleType.WARD_NURSE);
     }
 
     public boolean setWardNurseToDistrict(long nurseId,long districtId){
