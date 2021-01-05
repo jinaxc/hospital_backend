@@ -1,5 +1,8 @@
 package com.jinax.hospital_management_backend.Entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.jinax.hospital_management_backend.Component.BaseEnumToStringSerializer;
+
 import javax.persistence.*;
 
 /**
@@ -20,6 +23,9 @@ public class Patient {
         }
 
         public static Level getLevel(Integer level) {
+            if(level == null){
+                return null;
+            }
             switch (level){
                 case 0:return MINOR;
                 case 1:return MAJOR;
@@ -45,6 +51,7 @@ public class Patient {
     private String location;
     @Column(name = "level")
     @Enumerated(EnumType.STRING)
+    @JsonSerialize(using = BaseEnumToStringSerializer.class)
     private Level level;
     @Column(name = "district_id")
     private Long districtId;

@@ -67,10 +67,8 @@ public class UserController {
         if(user.getDistrictId() != null){
             user.setDistrictId(details.getDistrictId());
         }
-
         user.setIdentification(details.getUsername());
         user.setName(details.getRealUsername());
-        user.setDistrictId(details.getDistrictId());
         user.setRole(details.getRole());
         return user;
     }

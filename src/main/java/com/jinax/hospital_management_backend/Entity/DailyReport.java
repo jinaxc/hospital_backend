@@ -1,6 +1,9 @@
 package com.jinax.hospital_management_backend.Entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.Serializers;
+import com.jinax.hospital_management_backend.Component.BaseEnumToStringSerializer;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -24,6 +27,9 @@ public class DailyReport {
         }
 
         public static State getState(Integer level) {
+            if(level == null){
+                return null;
+            }
             switch (level){
                 case 0:return IN;
                 case 1:return OUT;
@@ -44,6 +50,7 @@ public class DailyReport {
     @Column(length = 100,name = "symptoms")
     private String symptoms;
     @Column(name = "state")
+    @JsonSerialize(using = BaseEnumToStringSerializer.class)
     private State state;
     @Column(name = "patient_id")
     private Long patientId;

@@ -44,6 +44,11 @@ public class DailyReportService {
         }
     }
 
+    public List<Long> findByPatientId(long patientId){
+        List<Long> byId = reportRepository.findAllByPatientIdIs(patientId);
+        return byId;
+    }
+
     /**
      * besides remove patient, this method should automatically introduce patients from other isolation district if the patient is released
      * @param dailyId dailyId

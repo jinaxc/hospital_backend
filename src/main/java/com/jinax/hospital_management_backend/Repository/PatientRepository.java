@@ -17,7 +17,7 @@ import java.util.Optional;
 public interface PatientRepository extends JpaRepository<Patient,Long> {
     public List<Patient> findAllByNurseId(long nurseId);
 
-    @Query(value = "select ID from patient_with_state_and_level where if(?1 = '',1=1,district_id = ?1) and if(?2='',1=1,level = ?2) and if(?3 = '',1=1,level = ?3)",nativeQuery = true)
+    @Query(value = "select ID from patient_with_state_and_level where if(ISNULL(?1),1=1,district_id = ?1) and if(ISNULL(?2),1=1,level = ?2) and if(ISNULL(?3),1=1,level = ?3)",nativeQuery = true)
     public List<Long> findAllByDistrictIdAndLevelAndState(Long districtId, Patient.Level level, DailyReport.State state);
 
     @Query(value = "select * from patients_with_three_good_temperature",nativeQuery = true)

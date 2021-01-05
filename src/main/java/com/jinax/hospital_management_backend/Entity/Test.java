@@ -1,5 +1,7 @@
 package com.jinax.hospital_management_backend.Entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.jinax.hospital_management_backend.Component.BaseEnumToStringSerializer;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -57,6 +59,7 @@ public class Test {
     private Long id;
     @Column(name = "result")
     @Enumerated(EnumType.STRING)
+    @JsonSerialize(using = BaseEnumToStringSerializer.class)
     private Result result;
 
     @Column(name = "test_time")
@@ -66,6 +69,7 @@ public class Test {
     private Date testTime;
     @Column(name = "level")
     @Enumerated(EnumType.STRING)
+    @JsonSerialize(using = BaseEnumToStringSerializer.class)
     private Level level;
 
     public Long getId() {

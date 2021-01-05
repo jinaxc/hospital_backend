@@ -1,5 +1,7 @@
 package com.jinax.hospital_management_backend.Entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.jinax.hospital_management_backend.Component.BaseEnumToStringSerializer;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -41,6 +43,7 @@ public class Message {
     private Long id;
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
+    @JsonSerialize(using = BaseEnumToStringSerializer.class)
     private Type type;
 
     private Long targetId;

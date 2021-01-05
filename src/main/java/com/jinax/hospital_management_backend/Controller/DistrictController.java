@@ -8,6 +8,8 @@ import com.jinax.hospital_management_backend.Service.PatientService;
 import com.jinax.hospital_management_backend.Service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/district")
 public class DistrictController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DistrictController.class);
     private final UserService userService;
     private final PatientService patientService;
     private final BedService bedService;
@@ -41,6 +44,7 @@ public class DistrictController {
     @ResponseBody
     @GetMapping("/patient")
     public Map<String,List<Long>> getPatients(Long districtId,Boolean canLeave,Integer state,Integer level){
+        LOGGER.info("getPatients,district : {},canLeave : {},state : {},level : {}",districtId,canLeave,state,level);
         List<Long> patients = patientService.getPatients(districtId, canLeave, state, level);
         Map<String,List<Long>> result = new HashMap<>();
         result.put("data",patients);

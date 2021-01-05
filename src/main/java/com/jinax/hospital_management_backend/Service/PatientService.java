@@ -42,7 +42,7 @@ public class PatientService {
     public List<Long> getPatients(Long districtId, Boolean canLeave, Integer state, Integer level){
         List<Long> allByDistrictIdAndLevelAndState = patientRepository.
                 findAllByDistrictIdAndLevelAndState(districtId, Patient.Level.getLevel(level), DailyReport.State.getState(state));
-        if (canLeave) {
+        if (canLeave != null && canLeave) {
             List<Long> allWithThreeGoodTemperature = patientRepository.findAllWithThreeGoodTemperature();
             List<Long> allWithTwoNegativeTests = patientRepository.findAllWithTwoNegativeTests();
             allWithThreeGoodTemperature.retainAll(allWithTwoNegativeTests);
