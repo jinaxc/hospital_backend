@@ -1,8 +1,7 @@
 package com.jinax.hospital_management_backend.Entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.Serializers;
-import com.jinax.hospital_management_backend.Component.BaseEnumToStringSerializer;
+import com.jinax.hospital_management_backend.Component.BaseEnumToNumberSerializer;
 
 import javax.persistence.*;
 
@@ -14,10 +13,10 @@ import javax.persistence.*;
 public class District {
 
     public static enum Type implements BaseEnum {
-        MINOR(0),
-        MAJOR(1),
-        DANGER(2),
-        ISOLATION(3);
+        MINOR(1),
+        MAJOR(2),
+        DANGER(3),
+        ISOLATION(4);
 
         private Integer code;
         Type(int i) {
@@ -35,7 +34,7 @@ public class District {
     private Long id;
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
-    @JsonSerialize(using = BaseEnumToStringSerializer.class)
+    @JsonSerialize(using = BaseEnumToNumberSerializer.class)
     private Type type;
 
     public Long getId() {

@@ -24,7 +24,7 @@ public class MyUserDetails implements UserDetails {
         return user.getName();
     }
 
-    public long getDistrictId(){
+    public Long getDistrictId(){
         return user.getDistrictId();
     }
 

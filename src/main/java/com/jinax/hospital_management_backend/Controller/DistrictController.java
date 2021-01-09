@@ -54,7 +54,7 @@ public class DistrictController {
     @ApiOperation("获取护士长信息")
     @ResponseBody
     @GetMapping("/headNurse")
-    @PreAuthorize("hasAuthority('DOCTOR')")
+    @PreAuthorize("hasAnyAuthority('DOCTOR','CHIEF_NURSE')")
     public Map<String,Long> getChiefNurse(){
         MyUserDetails details = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Map<String,Long> result = new HashMap<>();
@@ -67,7 +67,7 @@ public class DistrictController {
     @ApiOperation("获取病房护士的信息")
     @ResponseBody
     @GetMapping("/roomNurse")
-    @PreAuthorize("hasAuthority('DOCTOR')")
+    @PreAuthorize("hasAnyAuthority('DOCTOR','CHIEF_NURSE')")
     public Map<String,List<Long>> getRoomNurses(){
         MyUserDetails details = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Map<String,List<Long>> result = new HashMap<>();
@@ -94,13 +94,20 @@ public class DistrictController {
     @ResponseBody
     @GetMapping("/bedPatient")
     @PreAuthorize("hasAuthority('CHIEF_NURSE')")
-    public Map<String,Map<Long,Long>> getBed2Patients(){
+    public List<Map<Long,Long>> getBed2Patients(){
         MyUserDetails details = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         long districtId = details.getDistrictId();
-        Map<Long, Long> allBedWithPatientIdInGivenDistrict = bedService.findAllBedWithPatientIdInGivenDistrict(districtId);
-        Map<String,Map<Long,Long>> result = new HashMap<>();
-        result.put("data",allBedWithPatientIdInGivenDistrict);
-        return result;
+        return bedService.findAllBedWithPatientIdInGivenDistrict(districtId);
+    }
+
+    @ApiOperation("获取当前区域内病床对应病人名字信息")
+    @ResponseBody
+    @GetMapping("/bedPatientName")
+    @PreAuthorize("hasAuthority('CHIEF_NURSE')")
+    public List<Map<Long,String>> getBed2PatientNames(){
+        MyUserDetails details = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        long districtId = details.getDistrictId();
+        return bedService.findAllBedWithPatientNameInGivenDistrict(districtId);
     }
 
     @ApiOperation("增加病房护士")

@@ -12,7 +12,7 @@ import java.io.IOException;
  * @author : chara
  */
 @Component
-public class BaseEnumToStringSerializer extends JsonSerializer<BaseEnum> {
+public class BaseEnumToNumberSerializer extends JsonSerializer<BaseEnum> {
     @Override
     public void serialize(BaseEnum value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
         gen.writeNumber(value.getCode());

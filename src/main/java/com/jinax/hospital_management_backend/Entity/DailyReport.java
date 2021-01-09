@@ -1,9 +1,7 @@
 package com.jinax.hospital_management_backend.Entity;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.Serializers;
-import com.jinax.hospital_management_backend.Component.BaseEnumToStringSerializer;
+import com.jinax.hospital_management_backend.Component.BaseEnumToNumberSerializer;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -17,8 +15,8 @@ import java.util.Date;
 @Table(name = "daily_report")
 public class DailyReport {
     public static enum State implements BaseEnum {
-        IN(1),
-        OUT(0),
+        IN(0),
+        OUT(1),
         DIE(2);
         private Integer code;
 
@@ -50,12 +48,24 @@ public class DailyReport {
     @Column(length = 100,name = "symptoms")
     private String symptoms;
     @Column(name = "state")
-    @JsonSerialize(using = BaseEnumToStringSerializer.class)
+    @Enumerated(EnumType.STRING)
+    @JsonSerialize(using = BaseEnumToNumberSerializer.class)
     private State state;
     @Column(name = "patient_id")
     private Long patientId;
     @Column(name = "test_id")
     private Long testId;
+
+    public Long getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(Long temperature) {
+        this.temperature = temperature;
+    }
+
+    @Column(name = "temperature")
+    private Long temperature;
     @Column(name = "time")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp

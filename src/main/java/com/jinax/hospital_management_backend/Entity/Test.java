@@ -1,7 +1,7 @@
 package com.jinax.hospital_management_backend.Entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.jinax.hospital_management_backend.Component.BaseEnumToStringSerializer;
+import com.jinax.hospital_management_backend.Component.BaseEnumToNumberSerializer;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -59,9 +59,10 @@ public class Test {
     private Long id;
     @Column(name = "result")
     @Enumerated(EnumType.STRING)
-    @JsonSerialize(using = BaseEnumToStringSerializer.class)
+    @JsonSerialize(using = BaseEnumToNumberSerializer.class)
     private Result result;
-
+    @Column(name = "patient_id")
+    private long patientId;
     @Column(name = "test_time")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
@@ -69,8 +70,18 @@ public class Test {
     private Date testTime;
     @Column(name = "level")
     @Enumerated(EnumType.STRING)
-    @JsonSerialize(using = BaseEnumToStringSerializer.class)
+    @JsonSerialize(using = BaseEnumToNumberSerializer.class)
     private Level level;
+
+    public Test(Long id, Result result, Date testTime, Level level) {
+        this.id = id;
+        this.result = result;
+        this.testTime = testTime;
+        this.level = level;
+    }
+
+    public Test() {
+    }
 
     public Long getId() {
         return id;
@@ -102,5 +113,13 @@ public class Test {
 
     public void setLevel(Level level) {
         this.level = level;
+    }
+
+    public long getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(long patientId) {
+        this.patientId = patientId;
     }
 }

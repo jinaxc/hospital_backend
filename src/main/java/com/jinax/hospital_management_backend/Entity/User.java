@@ -2,8 +2,7 @@ package com.jinax.hospital_management_backend.Entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.jinax.hospital_management_backend.Component.BaseEnumToStringSerializer;
-import com.sun.istack.NotNull;
+import com.jinax.hospital_management_backend.Component.BaseEnumToNumberSerializer;
 
 import javax.persistence.*;
 
@@ -43,7 +42,7 @@ public class User {
     private String password;
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    @JsonSerialize(using = BaseEnumToStringSerializer.class)
+    @JsonSerialize(using = BaseEnumToNumberSerializer.class)
     private roleType role;
     @Column(name = "district_id")
     private Long districtId;

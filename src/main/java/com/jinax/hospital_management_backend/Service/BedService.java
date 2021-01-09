@@ -3,6 +3,7 @@ package com.jinax.hospital_management_backend.Service;
 import com.jinax.hospital_management_backend.Repository.BedRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,7 +17,10 @@ public class BedService {
         this.bedRepository = bedRepository;
     }
 
-    public Map<Long,Long> findAllBedWithPatientIdInGivenDistrict(Long districtId){
+    public List<Map<Long,Long>> findAllBedWithPatientIdInGivenDistrict(Long districtId){
         return bedRepository.findAllBedWithPatientIdInGivenDistrict(districtId);
+    }
+    public List<Map<Long,String>> findAllBedWithPatientNameInGivenDistrict(Long districtId){
+        return bedRepository.findAllBedWithPatientNameInGivenDistrict(districtId);
     }
 }

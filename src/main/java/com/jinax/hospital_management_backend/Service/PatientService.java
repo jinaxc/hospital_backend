@@ -20,14 +20,16 @@ public class PatientService {
     private final DistrictRepository districtRepository;
     private final BedRepository bedRepository;
     private final UserRepository userRepository;
+    private final MessageService messageService;
 
 
-    public PatientService(PatientRepository patientRepository, TestRepository testRepository, DistrictRepository districtRepository, BedRepository bedRepository, UserRepository userRepository) {
+    public PatientService(PatientRepository patientRepository, TestRepository testRepository, DistrictRepository districtRepository, BedRepository bedRepository, UserRepository userRepository, MessageService messageService) {
         this.patientRepository = patientRepository;
         this.testRepository = testRepository;
         this.districtRepository = districtRepository;
         this.bedRepository = bedRepository;
         this.userRepository = userRepository;
+        this.messageService = messageService;
     }
 
     public Patient getPatient(long patientId) throws PatientNotExistedException {
@@ -73,7 +75,7 @@ public class PatientService {
         List<District> byType = districtRepository.findAllByType(District.Type.valueOf(level.name()));
         for(District district : byType){
             List<Long> emptyBedInGivenDistrict = bedRepository.findEmptyBedInGivenDistrict(district.getId());
-            List<Long> freeWardNurseInGivenDistrict = userRepository.findFreeWardNurseInGivenDistrict(district.getId(), district.getType().getCode());
+            List<Long> freeWardNurseInGivenDistrict = userRepository.findFreeWardNurseInGivenDistrict(district.getId(), 4 - district.getType().getCode());//TODO
             if(emptyBedInGivenDistrict.isEmpty() || freeWardNurseInGivenDistrict.isEmpty()){
                 continue;
             }
@@ -82,7 +84,14 @@ public class PatientService {
             patient.setBedId(bedId);
             patient.setDistrictId(district.getId());
             patient.setNurseId(nurseId);
-            return patientRepository.save(patient);
+            Patient save = patientRepository.save(patient);
+            Optional<User> byDistrictIdEqualsAndRoleChiefNurse = userRepository.findByDistrictIdEqualsAndRoleChiefNurse(patient.getDistrictId());
+            Message message = new Message();
+            message.setType(Message.Type.PATIENT_COME);
+            message.setData("病人 " + save.getId() + " 转移进了你负责的区域");
+            message.setTargetId(byDistrictIdEqualsAndRoleChiefNurse.get().getId());
+            messageService.addMessage(message);
+            return save;
         }
         List<District> allByType = districtRepository.findAllByType(District.Type.ISOLATION);
         patient.setDistrictId(allByType.get(0).getId());

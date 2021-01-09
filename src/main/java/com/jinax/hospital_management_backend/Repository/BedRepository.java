@@ -18,5 +18,8 @@ public interface BedRepository extends JpaRepository<Bed,Long> {
     public List<Long> findEmptyBedInGivenDistrict(long districtId);
 
     @Query(value = "select bed_id,patient.ID from bed left join patient on bed.ID = patient.bed_id where district_id = ?1",nativeQuery = true)
-    public Map<Long,Long> findAllBedWithPatientIdInGivenDistrict(long districtId);
+    public List<Map<Long,Long>> findAllBedWithPatientIdInGivenDistrict(long districtId);
+
+    @Query(value = "select bed_id,patient.name from bed left join patient on bed.ID = patient.bed_id where district_id = ?1",nativeQuery = true)
+    public List<Map<Long,String>> findAllBedWithPatientNameInGivenDistrict(long districtId);
 }

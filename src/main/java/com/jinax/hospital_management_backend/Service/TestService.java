@@ -52,5 +52,8 @@ public class TestService {
         }
     }
 
+    public List<Test> getAllTestsByPatientId(long patientId){
+        return testRepository.findAllTestsByPatientId(patientId);
+    }
 
 }

@@ -6,6 +6,8 @@ import com.jinax.hospital_management_backend.Service.DailyReportService;
 import com.jinax.hospital_management_backend.Service.TestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +22,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/treat")
 public class TreatController {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(TreatController.class);
     private final TestService testService;
     private final DailyReportService dailyReportService;
 
@@ -48,6 +50,7 @@ public class TreatController {
     @PostMapping("/naTest")
     @PreAuthorize("hasAuthority('DOCTOR')")
     public Test addTest(Test test){
+        LOGGER.info("addTest");
         return testService.addTest(test);
     }
 
@@ -56,6 +59,7 @@ public class TreatController {
     @PostMapping("/daily")
     @PreAuthorize("hasAuthority('WARD_NURSE')")
     public DailyReport addDailyReport(DailyReport dailyReport){
+        LOGGER.info("addDailyReport");
         return dailyReportService.addDailyReport(dailyReport);
     }
 
@@ -63,9 +67,9 @@ public class TreatController {
     @ResponseBody
     @PutMapping("/naTest/{testId}")
     @PreAuthorize("hasAuthority('DOCTOR')")
-    public Map<String, Long> updateTest(@PathVariable("testId") Long testId,Integer level){
+    public Map<String, Long> updateTest(@PathVariable("testId") Long testId, Test.Level level){
         Map<String, Long> result = new HashMap<>();
-        Test test = testService.updateTest(testId, level);
+        Test test = testService.updateTest(testId, level.getCode());
         result.put("data",test.getId());
         return result;
     }
@@ -74,9 +78,9 @@ public class TreatController {
     @ResponseBody
     @PutMapping("/daily/{dailyId}")
     @PreAuthorize("hasAuthority('DOCTOR')")
-    public Map<String, Long> updateDaily(@PathVariable("dailyId") Long dailyId,Integer state){
+    public Map<String, Long> updateDaily(@PathVariable("dailyId") Long dailyId, DailyReport.State state){
         Map<String, Long> result = new HashMap<>();
-        DailyReport dailyReport = dailyReportService.updateDaily(dailyId, state);
+        DailyReport dailyReport = dailyReportService.updateDaily(dailyId, state.getCode());
         result.put("data",dailyReport.getId());
         return result;
     }
